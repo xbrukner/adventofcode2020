@@ -31,7 +31,7 @@ extractNums index dimensions list = map (list !!) $ take dimensions $ unfoldr (\
     where size = length list
 -}
 
-
+{-
 generateLists :: Int -> [Integer] -> [[Integer]]
 generateLists dimensions list = generateLists' dimensions size (take dimensions $ repeat 0) (take dimensions $ repeat $ size - 1) list
     where size = length list
@@ -46,8 +46,20 @@ nextIndex size = snd . mapAccumL (\add el -> if el + add == size then (1, 0) els
 
 extractNums :: [Int] -> [Integer] -> [Integer]
 extractNums index list = map (list !!) index
+-}
 
+generateLists :: Int -> [Integer] -> [[Integer]]
+generateLists dimensions list = generateLists' (take dimensions $ repeat list) list
 
+generateLists' :: [[Integer]] -> [Integer] -> [[Integer]]
+generateLists' index list = reverse current : generateLists' next list
+        where ((_, current), next) = mapAccumL (extractAndMove list) (True, []) index
+
+extractAndMove :: [Integer] -> (Bool, [Integer]) -> [Integer] -> ((Bool, [Integer]), [Integer])
+extractAndMove list (True, res) [x] = ((True, x:res), list)
+extractAndMove _ (True, res) (x:xs) = ((False, x:res), xs)
+extractAndMove _ (False, res) el@(x:_) = ((False, x:res), el)
+extractAndMove _ (_, _) [] = error "empty index"
 
 extractList :: String -> [Integer]
 extractList = map read . words
