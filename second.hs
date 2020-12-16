@@ -23,7 +23,6 @@ parsePasswordPolicy input = let
     in PasswordPolicy{from = from, to = to, letter = head letter, password = password}
 
 -- https://stackoverflow.com/a/4978733
-
 separateBy :: Eq a => a -> [a] -> [[a]]
 separateBy chr = unfoldr sep where
   sep [] = Nothing
