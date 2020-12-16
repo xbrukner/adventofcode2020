@@ -52,7 +52,7 @@ generateLists :: Int -> [Integer] -> [[Integer]]
 generateLists dimensions list = generateLists' (take dimensions $ repeat list) list
 
 generateLists' :: [[Integer]] -> [Integer] -> [[Integer]]
-generateLists' index list = reverse current : generateLists' next list
+generateLists' index list = current : generateLists' next list
         where ((_, current), next) = mapAccumL (extractAndMove list) (True, []) index
 
 extractAndMove :: [Integer] -> (Bool, [Integer]) -> [Integer] -> ((Bool, [Integer]), [Integer])
