@@ -30,20 +30,23 @@ extractNums :: Int -> Int -> [Integer] -> [Integer]
 extractNums index dimensions list = map (list !!) $ take dimensions $ unfoldr (\x -> Just $ swap $ quotRem x size) index
     where size = length list
 -}
-generateLists :: Int -> [Integer] -> [[Integer]]
-generateLists dimensions list = generateLists' dimensions (take dimensions $ repeat 0) (take dimensions $ repeat $ (length list) - 1) list
 
-generateLists' :: Int -> [Int] -> [Int] -> [Integer] -> [[Integer]]
-generateLists' dimensions index maxIndex list
+
+generateLists :: Int -> [Integer] -> [[Integer]]
+generateLists dimensions list = generateLists' dimensions size (take dimensions $ repeat 0) (take dimensions $ repeat $ size - 1) list
+    where size = length list
+
+generateLists' :: Int -> Int -> [Int] -> [Int] -> [Integer] -> [[Integer]]
+generateLists' dimensions size index maxIndex list
     | index == maxIndex = [extractNums index list]
-    | otherwise = extractNums index list : generateLists' dimensions (nextIndex size index) maxIndex list
-        where size = length list
+    | otherwise = extractNums index list : generateLists' dimensions size (nextIndex size index) maxIndex list
 
 nextIndex :: Int -> [Int] -> [Int]
 nextIndex size = snd . mapAccumL (\add el -> if el + add == size then (1, 0) else (0, el + add)) 1
 
 extractNums :: [Int] -> [Integer] -> [Integer]
 extractNums index list = map (list !!) index
+
 
 
 extractList :: String -> [Integer]
