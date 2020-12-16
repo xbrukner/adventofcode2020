@@ -1,6 +1,6 @@
-import System.Environment
 import Data.List
 import Data.Tuple
+import System.Environment
 
 -- testInput = [1721, 979, 366, 299, 675, 1456]
 
@@ -48,18 +48,27 @@ extractNums :: [Int] -> [Integer] -> [Integer]
 extractNums index list = map (list !!) index
 -}
 
+dupe :: a -> (a,a)
+dupe x = (x,x)
+
 generateLists :: Int -> [Integer] -> [[Integer]]
 generateLists dimensions list = generateLists' (take dimensions $ repeat list) list
+--generateLists dimensions = uncurry (generateLists' . take dimensions . repeat) . dupe
 
 generateLists' :: [[Integer]] -> [Integer] -> [[Integer]]
 generateLists' index list = current : generateLists' next list
         where ((_, current), next) = mapAccumL (extractAndMove list) (True, []) index
 
 extractAndMove :: [Integer] -> (Bool, [Integer]) -> [Integer] -> ((Bool, [Integer]), [Integer])
-extractAndMove list (True, res) [x] = ((True, x:res), list)
-extractAndMove _ (True, res) (x:xs) = ((False, x:res), xs)
-extractAndMove _ (False, res) el@(x:_) = ((False, x:res), el)
-extractAndMove _ (_, _) [] = error "empty index"
+extractAndMove [] _ _ = error "undefined list"
+extractAndMove _ _ [] = error "undefined index"
+extractAndMove list (move, res) el@(x:xs)
+    | move == True && null xs   = ((True, x:res), list)
+    | move == True              = ((False, x:res), xs)
+    | move == False             = ((False, x:res), el)
+--extractAndMove list (True, res) [x] = ((True, x:res), list)
+--extractAndMove _ (True, res) (x:xs) = ((False, x:res), xs)
+--extractAndMove _ (False, res) el@(x:_) = ((False, x:res), el)
 
 extractList :: String -> [Integer]
 extractList = map read . words
